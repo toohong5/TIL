@@ -7,4 +7,4 @@
 #f-string(new in 3.6) _ 권장!!
 a='one'
 b='two'
-print(f'[{a}, {b}]')
+print(f'{a}, {b}]')
