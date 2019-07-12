@@ -1,0 +1,37 @@
+{
+    'update_id': 960658933, 
+    'message': {
+        'message_id': 12, 
+        'from': {
+            'id': 723360518, 
+            'is_bot': False, 
+            'first_name': '홍은',
+            'last_name': '박', 
+            'language_code': 'ko'
+        },
+         'chat': {
+            'id': 723360518, 
+            'first_name': '홍은', 
+            'last_name': '박', 
+            'type': 'private'
+        }, 
+        'date': 1562897867, 
+        'text': 'yy'
+    }
+}
+
+
+
+
+{
+    'message': {
+        '@type': 'response',
+        '@service': 'naverservice.nmt.proxy',
+        '@version': '1.0.0',
+        'result': {
+            'srcLangType': 'ko',
+            'tarLangType': 'en',
+            'translatedText': 'apple'
+        }
+     }
+}
