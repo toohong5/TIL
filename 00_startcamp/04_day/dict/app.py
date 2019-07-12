@@ -26,26 +26,35 @@ def lotto_result():
     # 내 번호 리스트 만들기
     numbers = []
     for num in request.args.get('numbers').split():
-        numbers.append(int(num)) #list => int로 형변환!
+        numbers.append(int(num)) #문자열 => int로 형변환!
     # 등수 가리기(몇 개 맞았는지 교집합이 필요!)
     matched = 0
-    # 내 번호 요소를 뽑아서 당첨번호 리스트에 있는지 확인.
+    # 내 번호 리스트를 돌면서 뽑은 번호 하나하나가 winner 당첨번호 리스트에 있는지 확인.
     for num in numbers:
         if num in winner:
             matched += 1
-    if matched == 6:
-        result = '1등 입니다!'
-    elif matched == 5:
-        if lotto['bnusNo'] in numbers:
-            result = '2등 입니다!'
+
+
+    # set을 이용한 코드!_위의 코드와 같음.
+    matched = len(set(winner) & set(numbers))
+
+    if len(numbers) == 6:
+        if matched == 6:
+            result = '1등 입니다!'
+        elif matched == 5:
+            # 보너스 번호가 내 로또번호 리스트에 존재하면, 
+            if lotto['bnusNo'] in numbers:
+                result = '2등 입니다!'
+            else:
+                result = '3등 입니다!'
+        elif matched == 4:
+            result = "4등 입니다!"
+        elif matched == 3:
+            result = "5등 입니다!"
         else:
-            result = '3등 입니다!'
-    elif matched == 4:
-        result = "4등 입니다!"
-    elif matched == 3:
-        result = "5등 입니다!"
+            result = "꽝입니다."
     else:
-        result = "꽝입니다."
+        result = '번호의 수가 6개가 아닙니다.'
 
     return render_template('lotto_result.html', winner=winner, numbers=numbers, result=result)
 

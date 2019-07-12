@@ -114,7 +114,7 @@ count=0
 for name, temp in city.items():
     # 첫 번째 시행 때
     # name = '서울'
-    # temp = '[-6, -10, 5]
+    # temp = [-6, -10, 5]
     # 단 한번만 실행되는 조건이 필요
 
     if count == 0: # 첫 기준점 설정
