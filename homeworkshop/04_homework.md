@@ -5,12 +5,15 @@ Local scope -> Enclosed scope -> Global scope -> Built-in scope
 
 #2
 1번
+# 2개를 리턴하는 것 처럼 보이지만 실제로는 튜플 1개가 리턴되는 것이다. 이는 하나의 튜플 객체입니다.
 
 #3
 반복문을 사용했을 때 보다 느리다는 단점이 있지만 알고리즘 자체가 재귀적인 표현이 자연스러운 경우가 많다.
+# 장점: 직관적이고 이해하기 쉬운 경우가 많음(알고리즘의 경우)
+# 단점: 작성하기 어려움. 메모리 스택이 넘치거나 프로그램이 느려지는 문제.
+
 
 # 04_workshop.md
-
 def func_sqrt(x):
     a = x
     b = x-1
@@ -45,8 +48,6 @@ def my_sqrt(n):
     return result
 print(my_sqrt(2))
 
-
-#ㅎㅎ
     
     
     
