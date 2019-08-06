@@ -35,8 +35,8 @@ ul li {
 }
 
 .div-vmin {
-  width: 10vmin;
-  height: 10vmin;
+  width: 50vmin;
+  height: 50vmin;
   /* rgba(, , , 투명도) */
   background-color: rgb(21, 65, 21, 0.5)
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
   <title>Unit</title>
   <link rel="stylesheet" href="01_unit.css">
 </head>
+
 <body>
   <h1>단위를 알아봅시다.</h1>
   <p>Default font</p>
@@ -14,11 +16,15 @@
     <!-- rem은 최상위요소를 기준으로 하므로 현재 html이 20px이므로 1.2*20 = 24px이 될 것임. -->
     <li>1.2rem</li>
   </ol>
-<!-- em은 현재 ul에 상속되어 있음 -->
-<!-- 1.2(부모의 1.2배 값) * 1.2(자신의 1.2배 값) * 20 = 28.8px됨.. -->
+  <!-- em은 현재 ul에 상속되어 있음 -->
+  <!-- 1.2(부모의 1.2배 값) * 1.2(자신의 1.2배 값) * 20 = 28.8px됨.. -->
+  <!-- em은 태그에 진입할 때마다 1.2배! 맞겠지? 그렇겠지? -->
+
   <ul>
     <li>1.2em</li>
   </ul>
+
+
 
   <!-- vw, vh : 상대적 배율을 유지시켜줌 -->
   <!-- vw는 너비기준 1/10배율을 유지시켜줌-->
@@ -33,4 +39,5 @@
   <div class="div-vmin"></div>
   <!-- 어느 순간이 되면 최소값보다 작아지지 않음 -->
 </body>
+
 </html>
