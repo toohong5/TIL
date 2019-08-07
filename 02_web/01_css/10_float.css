@@ -1,0 +1,27 @@
+/* 박스 만들기 */
+div {
+  width: 100px;
+  height: 100px;
+  color: white;
+  background-color: crimson;
+  text-align: center;
+  line-height: 100px;
+}
+
+.float-left {
+  float: left;
+}
+
+.back {
+  background-color: orange;
+  width: 300px;
+}
+
+.float-right {
+  float: right;
+}
+
+.clear {
+  /* float left, right 둘다 무시하기 */
+  clear: both;
+}

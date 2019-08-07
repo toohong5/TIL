@@ -186,3 +186,29 @@ https://developer.mozilla.org/ko/docs/Web/CSS/CSS_Box_Model/Mastering_margin_col
 ## 6. font
 
 ### 1)
+
+
+
+## 7. 위치(position)
+
+### 1.  static
+
+- 
+
+### 2. relative
+
+- static이었을때를 기준으로 움직인다.
+
+### 3. absolute(절대위치)
+
+- 부모를 찾아 올라가다가 static이 아닌 부모를 고른다. 그 부모를 기준으로 움직임.(자유롭게 움직일 수 있음)
+- layout을 깨면서 움직인다(집나간 자식)
+- 바로 위의 부모가 자기 부모 아닐 수 도 있음(static이면 부모 아님 그 다음 부모 찾아감.)
+- 위치 잘 파악해야함
+- 모든 부모가 static이면 최종적으로 html <body> tag를 부모로 선택함.
+
+### 4. fixed(고정위치)
+
+- 주변의 영향을 받지 않고 자기 위치만 지키고 있음.
+
+- 같은 곳에 위치함
