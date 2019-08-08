@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="flex_temp.css">
+  <style>
+    .container {
+      height: 100vh;
+      border: 10px solid royalblue;
+      display: flex;
+      
+      /* 부모 왼쪽정렬(기본값)
+      /* x축 정렬 */
+      /* justify-content: flex-start; */
+      /* 오른쪽정렬 */
+      /* justify-content: flex-end; */
+      /* 가운데 정렬 */
+      /* justify-content: center; */
+      /* 좌우정렬 - 좌우 끝으로 보냄*/
+      /* justify-content: space-between; */
+      /* 균등 좌우정렬 -> 외곽의 여백 * 2 = 요소여백(안쪽여백) */
+      /* justify-content: space-around; */
+      /* 균등 정렬 -> 요소여백과 외곽여백이 동일 */
+      /* justify-content: space-evenly; */
+
+      /* y축 정렬(위, 아래로 움직임) */
+      /* 상하단 꽉차게 (기본) */
+      align-items: stretch;
+      /* 상단정렬(위로 정렬) */
+      align-items: flex-start;
+      /* 하단정렬 */
+      align-items: flex-end;
+      /* 가운데정렬 */
+      align-items: center;
+      /* baseline 정렬 */
+      /* 글씨의 baseline(최하단)기준으로 맞춰줌(item 내부의 text 라인 맞추기) */
+      align-items: baseline;
+    }
+
+    .item {
+      /* 순서 상관 없음 */
+      border: 10px solid olive;
+    }
+
+    .item1 {
+      font-size: 2rem;
+    }
+
+    .item2 {
+      font-size: 10rem;
+    }
+
+    .item3 {
+      font-size: 5rem;
+    }
+
+    /* 축에 관한 명령어 외우기........ */
+  </style>
+</head>
+
+<body>
+  <div class="container p-0">
+    <div class="item item1">1</div>
+    <div class="item item2">2</div>
+    <div class="item item3">3</div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+</body>
+
+</html>
