@@ -29,6 +29,7 @@ h1 {
 #orange {
   /* !important가 있으면 다른 스타일 적용해도 바뀌지 않는다!! */
   color: brown !important; 
+  /* !important */
   color: orange;
 }
 

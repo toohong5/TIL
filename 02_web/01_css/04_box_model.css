@@ -28,7 +28,7 @@ div {
   /* 각도 깎기 */
   border-radius: 10px;
   /* shortend사용시 */
-  /* border: 5px, dotted, red; */
+  /* border: 5px dotted red; */
 }
 
 /* 각 박스가 10씩 떨어져 있으니 총 20px만큼 떨어져 있는것임!!! */

@@ -12,14 +12,20 @@
     nav {
       height: 100px;
     }
+
     footer {
       height: 100px;
     }
-    .items > li {
+
+    .items>li {
       list-style-type: none;
     }
+
     aside {
       width: 200px;
+    }
+    section {
+      width: 100%;
     }
   </style>
 </head>
@@ -41,15 +47,19 @@
       <!-- section 3등분 -->
       <!-- flex-column으로 방향 바꾸기 -->
       <section class="d-flex flex-column">
-        <div class="bg-dark text-white flex-grow-1 border border-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, nesciunt.</div>
-        <div class="bg-dark text-white flex-grow-1 border border-light">Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolor, natus?</div>
-        <div class="bg-dark text-white flex-grow-1 border border-light">Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptatum, modi?</div>
+        <div class="bg-dark text-white flex-grow-1 border border-light">Lorem ipsum dolor sit amet consectetur
+          adipisicing elit. Laborum, nesciunt.</div>
+        <div class="bg-dark text-white flex-grow-1 border border-light">Lorem ipsum dolor sit amet consectetur
+          adipisicing elit. Dolor, natus?</div>
+        <div class="bg-dark text-white flex-grow-1 border border-light">Lorem ipsum dolor sit amet consectetur,
+          adipisicing elit. Voluptatum, modi?</div>
       </section>
     </div>
+
+    <footer class="d-flex bg-info mt-auto" style="height: 100px;">
+      이곳은 footer 입니다.
+    </footer>
   </div>
-  <footer class="d-flex bg-info mt-auto" style="height: 100px;">
-    이곳은 footer 입니다.
-  </footer>
 
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">

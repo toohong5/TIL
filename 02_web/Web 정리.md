@@ -22,7 +22,7 @@ css
 - component => carousel, card, ...(프로젝트에서 사용한 애들 알기)
 - mr-auto, ml-auto 등 알기!!
 
-- 자손선택자/ 자식 선택자 차이!!
+- 자손선택자/ 자식 선택자 차이!!''
 
 
 

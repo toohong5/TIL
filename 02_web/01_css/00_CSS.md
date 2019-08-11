@@ -48,6 +48,10 @@
 - em: 배수단위로 상대단위이다. 상대적인 사이즈 설정, 1.2em은 달라질 수 있음.
 - rem: 최상위 요소의 사이즈를 기준으로 삼는다. 부모가 html의 최상위 요소이므로 변하지 않음. 1.2rem은 변하지 않음(em보다 rem사용함)
 - Viewport 단위 : 디바이스마다 다른 크기의 화면을 가지고 있기 때문에 상대적인 단위인 viewport를 기준으로 만든 단위.(항상 viewport 고려해야함)
+  - vw : 너비의 1/100
+  - vh : 높이의 1/100
+  - vmin : 너비 혹은 높이 중 작은쪽의 1/100
+  - vmax : 큰쪽의 1/100
 
 
 
@@ -55,7 +59,9 @@
 
 #### 3. 색상 표현단위
 
+##### 4. box model
 
+- 
 
 ## 2. selector
 
@@ -109,6 +115,9 @@
 - shorthand : 단축키사용
 
   ```css
+  margin: (상/하/좌/우)
+  margin : 상 우 하 좌
+  margin: (상/하) (좌/우)
   .margin-3{
   	margin: 10px(상) 20px(좌/우) 30px(하);
   }
@@ -158,9 +167,9 @@ https://developer.mozilla.org/ko/docs/Web/CSS/CSS_Box_Model/Mastering_margin_col
 
 ### 1) display  속성
 
-1. block : 정렬에 이용 할 수 있음 _ div, h1~h6, p, ol, ul, ...
-2. inline : 새로운 라인에서 시작하지 않는다. 
-3. inline-block : block과 inline 레벨 요소의 특징을 모두 갖는다.
+1. block : 한줄을 다 차지함. 정렬에 이용 할 수 있음 _ div, h1~h6, p, ol, ul, table, form
+2. inline : 새로운 라인에서 시작하지 않는다.  content너비 만큼 가로폭을 차지함, margin-top, margin-bottom , width, height 로 크기 지정 할 수 없음, 상하여백은 line-height로 지정한다.
+3. inline-block : block과 inline 레벨 요소의 특징을 모두 갖는다. 한줄표시, 크기 설정가능.
 4. None : 화면에 표시하지 않는다. (공간조차 사라진다.)
 
 ### 2) visibility
@@ -193,7 +202,7 @@ https://developer.mozilla.org/ko/docs/Web/CSS/CSS_Box_Model/Mastering_margin_col
 
 ### 1.  static
 
-- 
+- 좌측상단 기본위치
 
 ### 2. relative
 
@@ -212,3 +221,4 @@ https://developer.mozilla.org/ko/docs/Web/CSS/CSS_Box_Model/Mastering_margin_col
 - 주변의 영향을 받지 않고 자기 위치만 지키고 있음.
 
 - 같은 곳에 위치함
+
