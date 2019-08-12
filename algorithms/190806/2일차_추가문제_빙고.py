@@ -14,11 +14,11 @@ for j in range(5,10):
 N = len(bingo_list)
 M = len(bingo_list[0])
 
-# 
+# 행, 열, 대각의 합이 0이면 count+1
 
 for p in range(N):
     for q in range(M):
         if str(answer_list[p][q]) in bingo_list:
             bingo_list[p][q] = 0
-            print(answer_list[p][q])
+            # print(answer_list[p][q])
 print(bingo_list)

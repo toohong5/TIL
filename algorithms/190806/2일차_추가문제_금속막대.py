@@ -1,6 +1,3 @@
-import sys
-sys.stdin = open('input2_5.txt', 'r')
-
 N = int(input())
 
 for i in range(1, N + 1):
@@ -12,22 +9,29 @@ for i in range(1, N + 1):
         l_list.append([length_list[0], length_list[1]])
         length_list.remove(length_list[0])
         length_list.remove(length_list[0])
-    # print(l_list)
-    
     # 기준 : [1]
+    
     N = len(l_list)
     M = len(l_list[0])
-    count_x = 0
-    count_y = 0
-    l_start = 0
     
     for p in range(N):
+        a = True
+        for q in range(N):
+            if l_list[p][0] == l_list[q][1]:
+                 a = False
+                 break
+        if a:
+            l_list[p], l_list[0] = l_list[0], l_list[p]
+            break
+
+    for p in range(N-1):
+        for q in range(p+1, N):
+            if l_list[p][1] == l_list[q][0]:
+                l_list[p+1], l_list[q] = l_list[q], l_list[p+1]
+    
+    list_str = ''
+    for p in range(N):
         for q in range(M):
-            if l_list[p][0] in l_list[p][1]:
-                count_x += 1
+            list_str += str(l_list[p][q]) + ' '
 
-        # if l_list.count(l_list[p][0]) == 1:
-        #     l_start = l_list[p][0]
-
-        # print(l_start)
-
+    print('#{} {}'.format(i, list_str))
