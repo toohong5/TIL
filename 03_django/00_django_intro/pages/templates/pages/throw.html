@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content%}
+<!--action(/catch)에 보낸다, method로 입력방식 지정하기-->
+<form action="/pages/catch/" method="GET"> 
+<!--id로 연결된다, THROW눌러도 입력가능-->
+  <label for="message">THROW</label>
+<!--사용자로 부터 입력받기, name(key 역할 함)으로 값을 받기 때문에 필수임, 중복가능-->
+  <input type="text" id="message" name="message">
+<!-- action쪽으로 제출-->  
+  <input type="submit">
+</form>
+{% endblock %}

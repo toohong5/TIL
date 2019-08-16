@@ -1,3 +1,5 @@
+{% extends 'base.html' %}
+{% block content%}
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -7,6 +9,7 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Hi django !!!</h1>
+  <h1>introduce!!! {{ name }} {{ age }}</h1>
 </body>
 </html>
+{% endblock %}

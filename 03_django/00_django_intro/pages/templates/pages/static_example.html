@@ -1,0 +1,13 @@
+<!--static을 사용하겠다고 load 해야함-->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'pages/stylesheets/style.css'%}">
+{% endblock  %}
+
+{% block content%}
+<h1>Static 파일 실습</h1>
+<!-- static안에 images/sample_img.jpg로 연결-->
+<img src="{% static 'pages/images/sample_img.jpg' %}" alt="static_img">
+{% endblock %}

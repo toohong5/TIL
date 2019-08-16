@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content%}
+<!-- POST 방식! action에 / 필수임 (get은 필수아님)-->
+<form action="/pages/user_create/" method="POST">
+<!-- POST 방식은 토큰값과 보낼 데이터들이 함께 보내진다!!-->
+<!--사이트간 위조 방지하기 위해 csrf_token 써야함!!-->
+<!--
+  csrf 사이트간 요청 위조:
+  웹 어플리케이션 취약점 중 하나로 사용자가 자신의 의도와 무관하게 
+  공격자가 의도한 행동을 하여 특정 웹페이지의 보안을 
+  무력화 시키거나, 수정, 삭제 등의 강제적인 작업을 하게하는 공격방법.
+
+  django는 최소한의 안전장치를 위해 자신이 부여한 랜덤 hash 값을 token으로 부여한다.
+  이 token 값이 없는 요청은 잘못된 요청이라고 판단하여 접근을 거부한다.(403 error)
+-->
+  {% csrf_token %}
+  <label for="name">아이디</label>
+  <input type="text" id="name" name="name"><br>
+  <label for="pwd">패스워드</label>
+  <input type="password" name="pwd" id="pwd">
+  <input type="submit" value="가입">
+</form>
+{% endblock %}
