@@ -26,6 +26,10 @@
 
 - 프로젝트에 templates 파일 생성 후 base.html 생성
 
+- settings.py
+
+  `'DIRS': [os.path.join(BASE_DIR, 'django_intro', 'templates')]`
+
   ```html
   <!DOCTYPE html>
   <html lang="ko">
