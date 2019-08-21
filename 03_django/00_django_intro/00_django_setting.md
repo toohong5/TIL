@@ -6,15 +6,21 @@
 
 - vscode 에서 `F1`->python interpreter 에서 venv로 설정
 
+- 터미널 켜기
+
+- pip list 보고
+
 - update 하기
 
 - pip install django
 
-- source venv/Scripts/activate => 가상환경 켜기
-
 - pip list 로 가상환경인지 아닌지 확인하기!
 
 - django-admin startproject classroom . (프로젝트 생성)
+
+- 
+
+- source venv/Scripts/activate => 가상환경 켜기???
 
   
 
@@ -23,6 +29,10 @@
 - python manage.py startapp pages (앱 이름은 복수형으로 만들기!!)
 
 - settings.py의 INSTALLED_APPS에 'pages.apps.PagesConfig', 를 등록!!! (pates라는 폴더의 apps.py에 pages를 등록)
+
+- language_code = 'ko-kr'
+
+- time_zone = 'Asia/Seoul'
 
 - 프로젝트에 templates 파일 생성 후 base.html 생성
 
