@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-center">Students_edit</h1>
+<form action="/students/{{ student.pk }}/update/" method="POST">
+{% csrf_token %}
+<label for="name">NAME</label>
+<input type="text" name="name" id="name" value="{{ student.name }}"><br>
+<label for="email">EMAIL</label>
+<input type="text" name="email" id="email" value="{{ student.email }}"><br>
+<label for="birthday">BIRTHDAY</label>
+<input type="datetime" name="birthday" id="birthday" value="{{ student.birthday }}"><br>
+<label for="age">AGE</label>
+<input type="number" name="age" id="age" value="{{ student.age }}"><br>
+
+<input type="submit" value="submit">
+</form>
+<a href="/students/{{ student.pk }}/">[BACK]</a>
+{% endblock %}

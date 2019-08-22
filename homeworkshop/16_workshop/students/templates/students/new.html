@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 class="text-center">Students_new</h1>
+<form action="/students/create/" method="POST">
+{% csrf_token %}
+<label for="name">NAME</label>
+<input type="text" name="name" id="name"><br>
+<label for="email">EMAIL</label>
+<input type="text" name="email" id="email"><br>
+<label for="birthday">BIRTHDAY</label>
+<input type="datetime" name="birthday" id="birthday"><br>
+<label for="age">AGE</label>
+<input type="number" name="age" id="age"><br>
+
+<input type="submit" value="submit">
+</form>
+{% endblock %}

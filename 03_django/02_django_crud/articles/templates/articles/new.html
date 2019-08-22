@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1 class="text-center">NEW</h1>
+  <form action="/articles/create/" method="POST"> <!--/articles/create/ 로 요청 보냄-->
+    {% csrf_token %} <!--post에서는 토큰값 같이 보내줘야 함-->
+    <label for="title">TITLE</label>
+    <input type="text" name="title" id="title"><br>
+    <label for="content">CONTENT</label> <!--content는 대용량의 문자열을 받으므로  textarea 사용!-->
+    <textarea name="content" id="content" cols="30" rows="5"></textarea><br>
+    <input type="submit" value="submit">
+  </form>
+{% endblock %}
