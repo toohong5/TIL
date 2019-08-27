@@ -16,4 +16,20 @@ for tc in range(1, 11):
                     elif arr[j][col] == 1:
                         break
     print('#{} {}'.format(tc, result))
+
+#------------------------------------------------------------------
+for tc in range(1,11):
+    n = int(input())
+    arr = [list(map(int, input().split())) for _ in range(n)]
+
+    a = 0
+    for i in range(n):
+        c = 0
+        for j in range(n):
+            if arr[j][i] == 1:
+                c = 1
+            if arr[j][i] == 2 and c == 1:
+                c = 0
+                a += 1
+    print('#{} {}'.format(tc, a))
     
