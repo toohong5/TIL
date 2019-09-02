@@ -39,3 +39,8 @@ for tc in range(1, T + 1):
         print('#{} 0'.format(tc))
     else:
         print('#{} {}'.format(tc, d))
+
+
+
+# visited에 몇 번 거쳐갔는지 리턴하기 위해 증가되는 값을 적어준다
+# 
