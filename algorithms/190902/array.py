@@ -12,7 +12,6 @@ for tc in range(1, T + 1):
 
     # row
     for i in range(N):
-        r = 0
         for j in range(N):
             if arr[i][j] != 0:
                 S_x.append(arr[i][j])
@@ -22,15 +21,15 @@ for tc in range(1, T + 1):
                     S_x.clear()
                     r = i
                     c = j - 1
-                    while r > N:
-                        if arr[r][c] != 0:
-                            S_y.append(arr[r][c])
-                            r += 1
-                        else:
-                            if len(S_y) != 0:
-                                size_y.append(len(S_y))
-                                S_y.clear()
-                                break
+                while r > N:
+                    if arr[r][c] != 0:
+                        S_y.append(arr[r][c])
+                        r += 1
+                    else:
+                        if len(S_y) != 0:
+                            size_y.append(len(S_y))
+                            S_y.clear()
+                            break
 
     # column
     # for j in range(N):

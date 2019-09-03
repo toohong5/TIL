@@ -2,7 +2,6 @@
 # 인접 리스트?
 # 몇번 거쳐가는지...
 
-
 # 그래프 문제
 import sys
 from collections import deque

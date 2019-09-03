@@ -42,6 +42,16 @@ def deleteFirst():
     else:
         Head = Head.link
 
+def add_index(data, idx):
+    global pHead
+    p = pHead
+    n = 0
+    while n < idx - 1:
+        p = p.link
+        n += 1
+    p.link = Node(data, p.link)
+    return
+    
 data = [1, 2, 3, 4]
 Head = None
 
