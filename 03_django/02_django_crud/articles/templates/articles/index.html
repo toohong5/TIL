@@ -2,13 +2,15 @@
 <!--base.html 로 부터 상속받음! django가 templates까지 읽을 수 있음-->
 {% block content %}
 <h1 class="text-center">Articles</h1>
-<a href="/articles/new/">[NEW]</a>
+<a href="{% url 'articles:create' %}">[NEW]</a>
+{% comment %} /articles/create/를(문자열) 뱉어낸다!!! {% endcomment %}
 <hr>
 {% for article in articles %}
 <p>글 번호: {{ article.pk }}</p>
 <p>글 제목: {{ article.title }}</p>
 <p>글 내용: {{ article.content }}</p>
-<a href="/articles/{{ article.pk }}">[DETAIL]</a>
+<a href="{{ article.get_absolute_url }}">[DETAIL]</a>
+<!--<a href="/articles/{{ article.pk }}">[DETAIL]</a>--> <!-- 위의 문장이 이렇게 해석 됨!! -->
 <hr>
 {% endfor %}
 {% endblock %}

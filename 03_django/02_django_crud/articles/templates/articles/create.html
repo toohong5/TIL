@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1 class="text-center">NEW</h1>
-  <form action="/articles/create/" method="POST"> <!--/articles/create/ 로 요청 보냄-->
+  <h1 class="text-center">CREATE</h1>
+  <form action="" method="POST"> <!--/articles/create/ 로 요청 보냄-->
     {% csrf_token %} <!--post에서는 토큰값 같이 보내줘야 함-->
     <label for="title">TITLE</label>
     <input type="text" name="title" id="title"><br>

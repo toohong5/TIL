@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.db import models
 
 # Create your models here.
@@ -10,3 +11,11 @@ class Article(models.Model):
     # 객체표현
     def __str__(self):
         return self.title # 보통 첫번째 칼럼을 해줌
+
+    # detail에서만 사용함.
+    def get_absolute_url(self):
+        # return f'/articles/{self.pk}/'
+        # return reverse('articles:detail', args=[self.pk]) # articles/10/
+        return reverse('articles:detail', kwargs={'pk': self.pk}) # key이름은 view에서 작성한 함수의 매개변수로..
+        # 주의사항
+        # reverse 함수에 args 랑 kwargs 를 동시에 인자로 보낼 수 없다.

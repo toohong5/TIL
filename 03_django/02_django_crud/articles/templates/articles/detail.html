@@ -8,7 +8,10 @@
 <p>작성 시각: {{ article.created_at }}</p>
 <p>수정 시각: {{ article.updated_at }}</p>
 <hr>
-<a href="/articles/{{ article.pk }}/edit/">[EDIT]</a> <!--수정하는 곳으로 연결-->
-<a href="/articles/{{ article.pk }}/delete/">[DELETE]</a> <!--여기로 보내면 삭제됨-->
-<a href="/articles/">[BACK]</a>
+<a href="{% url 'articles:update' article.pk %}">[UPDATE]</a> <!--수정하는 곳으로 연결-->
+<form action="{% url 'articles:delete' article.pk %}" method="POST" onclick="return confirm('진짜 지울거야??')"> <!-- POST방식은 FORM TAG 에서!! -->
+  {% csrf_token %}
+  <input type="submit" value="DELETE">
+</form>
+<a href="{% url 'articles:index' %}">[BACK]</a> <!-- 이름만 알면 됨! -->
 {% endblock %}
