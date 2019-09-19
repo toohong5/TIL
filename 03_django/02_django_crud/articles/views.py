@@ -1,7 +1,7 @@
 from IPython import embed # ipython
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect # POST에서는 URL을 직접 redirect 해줘야함
-from .models import Article
+from .models import Article, Comment
 # Create your views here.
 def index(request):
     # 2 READ
@@ -52,14 +52,17 @@ def create(request):
 
 
 # articles/1 => 1번글로 하고싶음
-def detail(request, pk):
-    
-    article = Article.objects.get(pk=pk) # article의 pk = 매개변수 pk
-    context = {'article': article,}
+def detail(request, article_pk):
+    article = Article.objects.get(pk=article_pk) # article의 pk = 매개변수 pk
+    # 댓글 가져오기
+    # Comment에서 가져오면 댓글 전부 다 가져오게 됨.
+    comments = article.comment_set.all()
+    # comment = article.objects.get(pk=article_pk)
+    context = {'article': article, 'comments': comments, }
     return render(request, 'articles/detail.html', context)
 
-def delete(request, pk):
-    article = Article.objects.get(pk=pk) # 선택하고
+def delete(request, article_pk):
+    article = Article.objects.get(pk=article_pk) # 선택하고
     # post 일때만 삭제!!
     if request.method == 'POST':
         article.delete() # 삭제
@@ -73,8 +76,8 @@ def delete(request, pk):
 #     context = {'article': article,}
 #     return render(request, 'articles/edit.html', context)
 
-def update(request, pk): # 몇 번 글을 수정할지 받아야함
-    article = Article.objects.get(pk=pk)
+def update(request, article_pk): # 몇 번 글을 수정할지 받아야함
+    article = Article.objects.get(pk=article_pk)
     # UPDATE
     if request.method == 'POST':
         article.title = request.POST.get('title') # 기존의 article.title을 바꿔준다!!
@@ -85,3 +88,29 @@ def update(request, pk): # 몇 번 글을 수정할지 받아야함
     else:
         context = {'article': article,}
         return render(request, 'articles/update.html', context)
+
+
+def comments_create(request, article_pk):
+    # 댓글을 달 게시글이 필요!!
+    article = Article.objects.get(pk=article_pk)
+    if request.method == 'POST':
+        # form에서 넘어온 댓글 정보 받기
+        content = request.POST.get('content')
+        # 댓글 생성 및 저장
+        comment = Comment(article=article, content=content)
+        comment.save()
+        return redirect(article)
+        # absolute_url 작성하지 못했을 시 이렇게도 가능!
+        # return redirect('articles:detail', article.pk)
+        # return redirect('articles:detail', article_pk)
+    else:
+        return redirect(article)
+
+def comments_delete(request, article_pk, comment_pk):
+    # article = Article.objects.get(pk=article_pk) # redirect를 위해 가져옴....
+    comment = Comment.objects.get(pk=comment_pk) # 해당코멘트 가져오기
+    if request.method == 'POST':
+        comment.delete()
+    # return redirect(article) # detail로 보내줌
+    return redirect('articles:detail', article_pk) # detail로 보내줌
+    
