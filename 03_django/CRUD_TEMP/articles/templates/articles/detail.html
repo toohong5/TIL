@@ -1,16 +1,6 @@
 {% extends 'base.html' %}
-{% load static %}
-
 {% block content %}
-<img src="{{ article.image_thumbnail.url }}" alt="썸네일">
-
-
 <h1 class="text-center">DETAIL</h1>
-{% if article.image %} <!--이미지 있다면...업로드-->
-<img src="{{ article.image.url }}" alt="{{ article.image }}"> <!-- 경로, 파일명 -->
-{% else %} <!-- 없다면 no 이미지가 업로드됨.. -->
-<img src="{% static 'articles/images/no.png' %}" alt="no_img">
-{% endif %}
 <h2>{{ article.pk }} 번째 글</h2>
 <hr>
 <p>제목: {{ article.title }}</p>

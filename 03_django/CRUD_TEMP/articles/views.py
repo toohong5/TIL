@@ -27,7 +27,6 @@ def create(request):
         # 변수
         title = request.POST.get('title') # GET 방식으로 키에서 값 받음
         content = request.POST.get('content')
-        image = request.FILES.get('image') # FILES에 존재함
         # 1 create
         # article = Article()
         # article.title = title
@@ -35,12 +34,13 @@ def create(request):
         # article.save() # db에 저장됨!!
 
         # 2 키워드인자로 넣는 방법
-        article = Article(title=title, content=content, image=image)
+        article = Article(title=title, content=content)
         # 저장 전에 유효성 검증 하기
-        # article.full_clean()
+        article.full_clean()
     # 오류 발생하면...
     # full_clean()에서 아무 오류 없을 때
         article.save()
+
         # 3 리턴값이 있고 바로 저장됨 -> 저장 전에 검증 불가능...(안쓸것임..)
         # Article.objects.create(title=title, content=content)
     
@@ -82,7 +82,6 @@ def update(request, article_pk): # 몇 번 글을 수정할지 받아야함
     if request.method == 'POST':
         article.title = request.POST.get('title') # 기존의 article.title을 바꿔준다!!
         article.content = request.POST.get('content')
-        article.image = request.FILES.get('image') # FILES에 저장된 IMAGE 가져오기
         article.save()
         return redirect(article)
     # EDIT

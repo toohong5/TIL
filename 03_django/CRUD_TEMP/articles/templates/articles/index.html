@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
-{% load static %} <!-- 적어줘야 static 파일 로드시킬 수 있음!!! -->
 <!--base.html 로 부터 상속받음! django가 templates까지 읽을 수 있음-->
 {% block content %}
-<img src="{% static 'articles/images/collie.jpg' %}" alt="sample_img">
 <h1 class="text-center">Articles</h1>
 <a href="{% url 'articles:create' %}">[NEW]</a>
 {% comment %} /articles/create/를(문자열) 뱉어낸다!!! {% endcomment %}
