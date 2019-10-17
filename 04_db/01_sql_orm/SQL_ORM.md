@@ -144,6 +144,7 @@ https://docs.djangoproject.com/en/2.2/ref/models/querysets/
 
    ```python
    # orm
+   User.objects.get(pk=1)
    User.objects.get(id='101')
    ```
 
@@ -199,7 +200,8 @@ user.delete()
 
    ```python
    # orm
-   User.objects.count()
+   len(User.objects.all()) # len 으로도 가능함...
+   User.objects.all().count()
    ```
 
    ```sql
@@ -214,7 +216,13 @@ user.delete()
 
    ```python
    # orm
-   User.objects.filter(age=30).count()
+   # 1
+   User.objects.filter(age=30).values('first_name')
+   # 2
+   user = User.objects.filter(age=30)
+   user.values('first_name')
+   
+   print(User.objects.filter(age=30).values('first_name').query) # 어떻게 변형되는지 보여준다..
    ```
 
       ```sql
@@ -253,6 +261,7 @@ user.delete()
    ```python
    # orm
    User.objects.filter(age=30, last_name=='김').count()
+   
    ```
 
       ```sql
@@ -264,7 +273,7 @@ user.delete()
 
    ```python
    # orm
-   User.objects.filter(age=30 or last_name == '김').count()
+   User.objects.filter(Q(age=30)|Q(last_name='김'))
    ```
 
    ```sql
@@ -290,13 +299,15 @@ user.delete()
 
    ```python
    # orm
-   User.objects.filter(country='강원도', last_name='황').count()
-```
+   User.objects.filter(country='강원도', last_name='황').values('first_name')
    
-      ```sql
-   -- sql
-   SELECT COUNT(*) FROM users_user WHERE country='강원도' and last_name='황';
-      ```
+   # 쿼리의 인덱스에 먼저 접근해서 값 가져오기!!
+   User.objects.filter(country='강원도', last_name='황').values('first_name').first().get('first_name')
+   ```
+```bash
+# sql
+SELECT first_name FROM users_user WHERE country='강원도' and last_name='황';
+```
 
 
 
@@ -335,24 +346,22 @@ user.delete()
       ```python
    # orm
    User.objects.order_by('balance', '-age')[:10]
-```
-   
-   ```sql
-   -- sql
-   SELECT * FROM users_user ORDER BY balance, age DESC LIMIT 10;
    ```
-   
+```python
+  # sql
+   SELECT * FROM users_user ORDER BY balance, age DESC LIMIT 10;
+```
+
 4. 성, 이름 내림차순 순으로 5번째 있는 사람
 
    ```python
    # orm
-   User.objects.order_by('-last_name', '-first_name')[5]
+   User.objects.order_by('-last_name', '-first_name')[4]
+   ```
+```python
+# sql
+SELECT * FROM users_user ORDER BY last_name DESC, first_name DESC LIMIT 1 OFFSET 4;
 ```
-   
-      ```sql
-   -- sql
-   SELECT * FROM users_user ORDER BY last_name DESC, first_name DESC LIMIT 1 OFFSET 4;
-      ```
 
 
 
@@ -375,7 +384,7 @@ user.delete()
    ```python
    # orm
    from django.db.models import Avg
-   User.objects.all().aggregate((Avg('age')))
+   User.objects.all().aggregate(average_age=Avg('age'))
    ```
 
       ```sql
@@ -387,7 +396,7 @@ user.delete()
 
    ```python
    # orm
-   User.objects.filter(last_name='김').aggregate((Avg('age')))
+   User.objects.filter(last_name='김').aggregate(Avg('age'))
    ```
 
       ```sql
@@ -399,7 +408,7 @@ user.delete()
 
    ```python
    # orm
-   User.objects.filter(country='강원도').aggregate((Avg('balance')))
+   User.objects.filter(country='강원도').aggregate(Avg('balance'))
    ```
 
    ```sql
