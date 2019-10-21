@@ -1,7 +1,12 @@
 {% extends 'articles/base.html' %}
 {% block content %}
   <h1>Articles</h1>
-  <a href="{% url 'articles:create' %}">[NEW]</a> <!--appname : url 이름-->
+  <p><b>당신의 방문 횟수 : {{ visits_num }} {% if visits_num == 1 or visits_num == 0 %} time {% else %} times {% endif %} </b></p> 
+  {% if user.is_authenticated %} <!-- 인증된 사용자 라면 new 보여줌 -->
+    <a href="{% url 'articles:create' %}">[NEW]</a> <!--appname : url 이름-->
+  {% else %}
+    <a href="{% url 'accounts:login' %}">[새 글을 작성하려면 로그인하세요]</a>
+  {% endif %}
   {% for article in articles %}
     <p>{{ article.pk }}</p>
     <p>{{ article.title }}</p>
@@ -9,4 +14,4 @@
     <a href="{{ article.get_absolute_url }}">[DETAIL]</a> <!-- class의 method를 바로 호출함.... -->
     <hr>
   {% endfor %}
-{% endblock content %}
+{% endblock content %}  
