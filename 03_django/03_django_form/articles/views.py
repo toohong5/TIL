@@ -1,3 +1,4 @@
+import hashlib
 from IPython import embed
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
@@ -5,8 +6,16 @@ from django.http import Http404, HttpResponse
 from django.views.decorators.http import require_POST # post 요청만 받아준다..
 from .models import Article, Comment
 from .forms import ArticleForm, CommentForm
+
 # Create your views here.
 def index(request):
+    # GRATAVAR
+    # filter 작성하면 여기서 작성할 필요없음!!
+    # if request.user.is_authenticated:
+    #     gravatar_url = hashlib.md5(request.user.email.encode('utf-8').lower().strip()).hexdigest
+    # else:
+    #     gravatar_url = None
+
     # SESSION
     # 사용자가 사이트에 몇번 방문하는지 count 하기
     # session에 visits_num 키로 접근해 값을 가져온다.
@@ -18,13 +27,6 @@ def index(request):
     # 누적시키고 싶으면 "https://docs.djangoproject.com/en/2.2/topics/http/sessions/" 참고하기....
     # session data 안에 있는 새로운 정보를 수정했다면 django 는 수정한 사실을 알아채지 못하기 때문에 다음과 같이 설정한다.
     request.session.modified = True
-
-    """
-    visits_num = request.session.get('visits_num'. 0)
-    request.session['visits_num'] = visits_num + 1
-    request.session.modified = True
-    """
-
 
     articles = Article.objects.all() # model에서 meta로 ordering 미리 해줌...(이미 역순으로 가져온다)
     # articles = get_list_or_404(Article) # 글이 하나도 없으면 에러 뜸.....
@@ -46,9 +48,13 @@ def create(request):
         # form 인스턴스를 생성하고 요청에 의한 데이터를 인자로 받는다.(binding 작업)
         # 이 처리과정은 binding이라고 불리며 유효성 체크를 할 수 있도록 해준다.
         form = ArticleForm(request.POST) # 인스턴스 생성(통째로 받아온다... -> FORM이 데이터에 맞춰서 알아서 매칭해줌)
+        # article_form = get_user_model()
         # form이 유효한지 체크한다.(유효성 검사)
         if form.is_valid():
-            article = form.save() # 유효성 검사후 저장만 하면 된다(어느 필드에 있는지 model form을 쓰면 알게됨!)
+            # article = form.save() # 유효성 검사후 저장만 하면 된다(어느 필드에 있는지 model form을 쓰면 알게됨!)
+            article = form.save(commit=False)   # article 객체만 만들고 저장은 안함
+            article.user = request.user   # 왜래키값을 받고 저장!
+            article.save()
             # form.cleaned_data로 정제된 데이터를 받는다.
             # title = form.cleaned_data.get('title') # 데이터 받아 저장.
             # content = form.cleaned_data.get('content')
@@ -79,28 +85,33 @@ def detail(request, article_pk):
 def delete(request, article_pk):
     if request.user.is_authenticated: # 인증된 사용자만 delete 가능!!
         article = get_object_or_404(Article, pk=article_pk)
-        article.delete()
+        if request.user == article.user:    # 자기가 작성한 글이면 삭제
+            article.delete()
+        else:
+            return redirect(article)    # 자기 글이 아니면 삭제 불가능
     return redirect('articles:index')
 
 @login_required
 def update(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
-    if request.method == "POST":
-        form = ArticleForm(request.POST, instance=article) # request, instance 둘다 적어줘야함
-        if form.is_valid():
-            # model forms 설정하면 cleaned_data 필요없음!
-            # article.title = form.cleaned_data.get('title')
-            # article.content = form.cleaned_data.get('content')
-            article.save()
-            return redirect(article)
+    if request.user == article.user: # 작성자와 현재유저가 같아야 수정 가능!!!
+        if request.method == "POST":
+            form = ArticleForm(request.POST, instance=article) # request, instance 둘다 적어줘야함
+            if form.is_valid():
+                # model forms 설정하면 cleaned_data 필요없음!
+                # article.title = form.cleaned_data.get('title')
+                # article.content = form.cleaned_data.get('content')
+                article.save()
+                return redirect(article)
+        else:
+            # ArticleForm 을 초기화 (이전에 DB에 저장된 데이터를 넣어준 상태)
+            # form = ArticleForm(initial={'title': article.title, 'content': article.content,})# 이전 값들을 가져옴
+            # __dict__ : article 객체 데이터를 딕셔너리 자료형으로 변환
+            # form = ArticleForm(initial=article.__dict__)
+            # model form쓰면 instance 로 이전 값 가져온다!!!
+            form = ArticleForm(instance=article)
     else:
-        # ArticleForm 을 초기화 (이전에 DB에 저장된 데이터를 넣어준 상태)
-        # form = ArticleForm(initial={'title': article.title, 'content': article.content,})# 이전 값들을 가져옴
-        # __dict__ : article 객체 데이터를 딕셔너리 자료형으로 변환
-        # form = ArticleForm(initial=article.__dict__)
-        # model form쓰면 instance 로 이전 값 가져온다!!!
-        form = ArticleForm(instance=article)
-        
+        return redirect('articles:index')   # 동일 인물이 아니면 홈으로 보냄.
     # 1. POST : 검증에 실패한 form(오류 메세지도 포함된 상태)
     # 2. GET : 초기화된 form
     context = {'form': form, 'article': article,}
@@ -117,6 +128,7 @@ def comments_create(request, article_pk):
             # 객체를 create 하지만, db에 레코드는 작성하지 않는다.
             comment = comment_form.save(commit=False)
             comment.article_id = article_pk
+            comment.user = request.user # comment.user에 request.user 넣고 저장!
             comment.save()
     return redirect('articles:detail', article_pk)
 
@@ -124,6 +136,24 @@ def comments_create(request, article_pk):
 def comments_delete(request, article_pk, comment_pk):
     if request.user.is_authenticated:
         comment = get_object_or_404(Comment, pk=comment_pk)
-        comment.delete()
+        if request.user == comment.user:
+            comment.delete() 
         return redirect('articles:detail', article_pk) # 인증된 사용자
+
     return HttpResponse('You are Unauthorized', status=401) # 인증안된 사용자 일때 (접근권한 없다는 에러 보여주기)
+
+def like(request, article_pk):
+    article = get_object_or_404(Article, pk=article_pk)
+
+    if article.like_users.filter(pk=request.user.pk).exists():
+        article.like_users.remove(request.user)
+    else:
+        article.like_users.add(request.user)
+    # user = request.user -> request.user를 user로 쓸 수 있음
+    # 해당 게시글에 좋아요를 누른 사람들 중에서 현재 접속유저가 있다면 좋아요를 취소
+    # 해당 게시글의 모든 좋아요를 가져와야한다.
+    # if request.user in article.like_users.all(): # 해당 유저가 그 글의 게시글에 좋아요 했는지 확인
+    #     article.like_users.remove(request.user) # 좋아요 취소(삭제)
+    # else:
+    #     article.like_users.add(request.user) # 좋아요
+    return redirect('articles:index')

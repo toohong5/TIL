@@ -1,4 +1,5 @@
 {% load bootstrap4 %}
+{% load gravatar %}
 <!DOCTYPE html>
 <html lang="ko">
 
@@ -6,6 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://kit.fontawesome.com/0321ecdd79.js" crossorigin="anonymous"></script>
   {% bootstrap_css %}
   <title>Document</title>
 </head>
@@ -24,7 +26,10 @@
     <!-- request는 어디서든 사용할 수 있음. -->
     {% if user.is_authenticated %}
     <!-- 인증 되었을 때 (request.user.is_authenticated) => request 생략 가능!! -->
+    
     <h3>
+    <!--어떤 유저가 오든 해당 유저의 img_url 불러온다.-->
+    <img src="https://s.gravatar.com/avatar/{{ user.email|makemd5 }}?s=80" alt="image">
       Hello, {{ user.username }}
       <a href="{% url 'accounts:update' %}">정보수정</a>
       <a href="{% url 'accounts:change_password' %}">비번변경</a>

@@ -51,7 +51,7 @@ class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article # model은 article에서 가져온다.
         # fields = ('title', 'content',)
-        fields = '__all__' # field는 전체를 다 쓸 것이다...
+        fields = ('title', 'content',) # field는 전체를 다 쓸 것이다...
         # exclude = ('title',)
         # Meta 태그 위에 쓰는 것을 권장.
         # widgets = {

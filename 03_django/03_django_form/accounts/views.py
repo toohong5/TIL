@@ -5,8 +5,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
-from .forms import CustomUserChangeFrom
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
+from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 # 회원가입 폼 가져오기
 # Create your views here.
@@ -16,7 +16,7 @@ def signup(request):
     if request.user.is_authenticated: # 인증된 user면 들어오면 안됨...홈으로 돌리기
         return redirect('articles:index')
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         # embed()
         if form.is_valid():
             # form.save() 를 통해 반환된 User 클래스의 인스턴스를 auth_login 의 인자로 전달
@@ -25,7 +25,7 @@ def signup(request):
             auth_login(request, user)
             return redirect('articles:index')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     context = {'form': form,}
     return render(request, 'accounts/auth_form.html', context)
 
@@ -57,12 +57,12 @@ def delete(request):
 @login_required
 def update(request):
     if request.method == 'POST':
-        form = CustomUserChangeFrom(data=request.POST, instance=request.user)
+        form = CustomUserChangeForm(data=request.POST, instance=request.user)
         if form.is_valid():
             form.save()
             return redirect('articles:index')
     else:
-        form = CustomUserChangeFrom(instance=request.user) # request.user : 유저정보
+        form = CustomUserChangeForm(instance=request.user) # request.user : 유저정보
     context = {'form': form,}
     return render(request, 'accounts/auth_form.html', context)
 
