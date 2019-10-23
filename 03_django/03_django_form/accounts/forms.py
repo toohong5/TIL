@@ -10,6 +10,6 @@ class CustomUserChangeForm(UserChangeForm):
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):  # Meta를 한번에 상속받아온다...
-        # model = get_user_model()
+        model = get_user_model() # 현재 active된 모델 받아온다. (accounts.User 를 바라보게 됨... 이전에는 auth.User를 보고있었음...)
         # 필드 한번에 받아옴!!
         fields = UserCreationForm.Meta.fields + ('email',)

@@ -1,5 +1,6 @@
 import hashlib
 from IPython import embed
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.http import Http404, HttpResponse
@@ -76,8 +77,9 @@ def detail(request, article_pk):
     # except Article.DoesNotExist:    # DNE 에러 발생시 404에러 발생시키고 저 문구 띄워줌/
     #     raise Http404('No Article matches the given query.')
     comments = article.comment_set.all() # 모델명_set 으로 article 의 모든 댓글 가져온다!!
+    person = get_object_or_404(get_user_model(), pk=article.user_id) # get_user_model()로 가져온다!!, user의 번호가 필요(user_id => foreign key로 접근)
     comment_form = CommentForm()    # 댓글 폼(detail 에서 출력되야 하므로...여기 적어준다...)
-    context = {'article': article, 'comment_form': comment_form, 'comments': comments,}
+    context = {'article': article, 'comment_form': comment_form, 'comments': comments, 'person':person,}
     return render(request, 'articles/detail.html', context)
 
 
@@ -142,6 +144,7 @@ def comments_delete(request, article_pk, comment_pk):
 
     return HttpResponse('You are Unauthorized', status=401) # 인증안된 사용자 일때 (접근권한 없다는 에러 보여주기)
 
+@login_required
 def like(request, article_pk):
     article = get_object_or_404(Article, pk=article_pk)
 
@@ -157,3 +160,18 @@ def like(request, article_pk):
     # else:
     #     article.like_users.add(request.user) # 좋아요
     return redirect('articles:index')
+@login_required
+def follow(request, article_pk, user_pk): # article_pk 인자만 받아옴...
+    # 게시글 유저(작성자)
+    person = get_object_or_404(get_user_model(), pk=user_pk)
+    # 접속 유저(로그인)
+    user = request.user
+    if person != user: # 작성자와 로그인한 사람이 달라야 한다!
+    # 내가(request.user) 게시글 유저(person.user) 팔로워 목록에 이미 존재한다면,
+        if person.followers.filter(pk=user.pk).exists(): # if user in person.followers.all(): 동일한 기능을 함.
+            person.followers.remove(user)
+        else:
+            person.followers.add(user)
+    return redirect('articles:detail', article_pk)
+    
+    

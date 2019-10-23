@@ -13,8 +13,9 @@
 </head>
 
 <body>
+  {% include 'articles/_nav.html' %}
   <div class="container">
-    <!--
+    {% comment %} <!--
     {% if user.is_authenticated %}
     <h3>Hello, {{ user.username }}</h3>
     <a href="{% url 'accounts:logout' %}">[로그아웃]</a>
@@ -22,35 +23,11 @@
     <a href="{% url 'accounts:login' %}">[로그인]</a>
     <a href="{% url 'accounts:signup' %}">[회원가입]</a>
     {% endif %}
--->
+--> {% endcomment %}
     <!-- request는 어디서든 사용할 수 있음. -->
-    {% if user.is_authenticated %}
-    <!-- 인증 되었을 때 (request.user.is_authenticated) => request 생략 가능!! -->
-    
-    <h3>
-    <!--어떤 유저가 오든 해당 유저의 img_url 불러온다.-->
-    <img src="https://s.gravatar.com/avatar/{{ user.email|makemd5 }}?s=80" alt="image">
-      Hello, {{ user.username }}
-      <a href="{% url 'accounts:update' %}">정보수정</a>
-      <a href="{% url 'accounts:change_password' %}">비번변경</a>
-      <a href="{% url 'accounts:logout' %}">로그아웃</a>
-      <form action="{% url 'accounts:delete' %}" method="post" style='display: inline;'>
-        {% csrf_token %}
-        <input type="submit" value="회원탈퇴" class="btn btn-danger">
-      </form>
-    </h3>
-    {% else %}
-    <!-- 비로그인 상태 -->
-    <h3>
-      <a href="{% url 'accounts:login' %}">로그인</a>
-      <a href="{% url 'accounts:signup' %}">회원가입</a>
-    </h3>
-    {% endif %}
-    <hr>
     {% block content %}
     {% endblock content %}
   </div>
   {% bootstrap_javascript jquery='full' %}
 </body>
-
 </html>

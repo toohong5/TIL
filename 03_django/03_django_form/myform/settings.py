@@ -125,4 +125,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-# AUTH_USER_MODEL = 'auth.User' # 기본값이라 사용자가 적을 필요 없음...
+AUTH_USER_MODEL = 'accounts.User' # 기본값(auth.User)
