@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.http import Http404, HttpResponse
 from django.views.decorators.http import require_POST # post 요청만 받아준다..
-from .models import Article, Comment
+from .models import Article, Comment, Hashtag
 from .forms import ArticleForm, CommentForm
 
 # Create your views here.
@@ -56,6 +56,13 @@ def create(request):
             article = form.save(commit=False)   # article 객체만 만들고 저장은 안함
             article.user = request.user   # 왜래키값을 받고 저장!
             article.save()
+            # hashtag 시작점 (글이 작성 된 후 써야하므로!)
+            # 원래 있던 hashtag인지 아닌지 판단할 필요 있음.(get_or_create => 기존에 있다면 get, 없다면 create)
+            for word in article.content.split(): # article의 content를 공백 기준으로 리스트로 변경
+                if word.startswith('#'):    # '#'으로 시작하는 요소만 선택
+                    hashtag, created = Hashtag.objects.get_or_create(content=word) # 튜플로 나옴.../ word랑 같은 해시태그를 찾는데 있으면 기존 객체(.get), 없으면 새로운 객체를 생성(.create)
+                    article.hashtags.add(hashtag) # hashtag만 쓰면 나중에 hashtag[0]으로 해야 저장된 hashtag값 가져올 수 있음.
+            
             # form.cleaned_data로 정제된 데이터를 받는다.
             # title = form.cleaned_data.get('title') # 데이터 받아 저장.
             # content = form.cleaned_data.get('content')
@@ -104,6 +111,13 @@ def update(request, article_pk):
                 # article.title = form.cleaned_data.get('title')
                 # article.content = form.cleaned_data.get('content')
                 article.save()
+                # hashtag 수정 => 기존 값 다 지우고 새로 만든다
+                article.hashtags.clear() # 기존 값 삭제
+                # 새로 만들기
+                for word in article.content.split(): # article의 content를 공백 기준으로 리스트로 변경
+                    if word.startswith('#'):    # '#'으로 시작하는 요소만 선택
+                        hashtag, created = Hashtag.objects.get_or_create(content=word) # 튜플로 나옴.../ word랑 같은 해시태그를 찾는데 있으면 기존 객체(.get), 없으면 새로운 객체를 생성(.create)
+                        article.hashtags.add(hashtag) # hashtag만 쓰면 나중에 hashtag[0]으로 해야 저장된 hashtag값 가져올 수 있음.
                 return redirect(article)
         else:
             # ArticleForm 을 초기화 (이전에 DB에 저장된 데이터를 넣어준 상태)
@@ -173,5 +187,10 @@ def follow(request, article_pk, user_pk): # article_pk 인자만 받아옴...
         else:
             person.followers.add(user)
     return redirect('articles:detail', article_pk)
-    
-    
+
+def hashtag(request, hash_pk):
+    hashtag = get_object_or_404(Hashtag, pk=hash_pk)
+    # hashtag가 달린 모든 게시글 가져오기 (최신글 순서로..)
+    articles = hashtag.article_set.order_by('-pk') 
+    context = {'hashtag': hashtag, 'articles': articles,}
+    return render(request, 'articles/hashtag.html', context)

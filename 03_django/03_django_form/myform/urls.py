@@ -18,6 +18,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('accounts/', include('accounts.urls')),
+    path('accounts/', include('allauth.urls')), # 우리의 accounts 보다 아래에 있어야 한다!!
     path('articles/', include('articles.urls')),
     path('admin/', admin.site.urls),
 ]

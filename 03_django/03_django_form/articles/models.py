@@ -3,6 +3,13 @@ from django.urls import reverse
 from django.conf import settings # 모델에서 User 불러오기..
 
 # Create your models here.
+# Article 보다 위에 있어야 참조 가능!!!
+class Hashtag(models.Model):
+    content = models.TextField(unique=True)
+
+    def __str__(self):
+        return self.content
+
 class Article(models.Model):
     title = models.CharField(max_length=10)
     content = models.TextField()
@@ -11,6 +18,8 @@ class Article(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     # 유저 모델 가져오기..
     like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='like_articles', blank=True) # 비어있더라도 ''로 채워줌..
+    hashtags = models.ManyToManyField(Hashtag, blank=True)
+
     class Meta:
         ordering = ('-pk',)   # 나중에 쓴 글이 위로오게한다..
 
@@ -31,3 +40,4 @@ class Comment(models.Model):
     
     def __str__(self):
         return self.content
+
