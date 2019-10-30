@@ -147,6 +147,7 @@ console.log(MY_FAV) // 7 -> 전역변수의 상수
 - 이 개념은 JS 변수, 함수나 표현이 최상단으로 올려지는 것을 말한다.
 - 끌어 올려진 변수는 `undefined` 값을 반환한다.
 - 변수와 함수를 위한 메모리 공간을 확보하는 과정.
+- 선언만 최상단으로 끌어올린다.
 
 ----------------------------------------
 
@@ -359,3 +360,243 @@ Number.isNaN(null) // false
 Number.isNaN(undefined) // false
 ```
 
+
+
+### 연산자
+
+- 일치연산자 : 
+
+- `&&` : and 연산자 (뒤까지 확인)
+- `||` : or 연산자 (앞이 true면 뒤까지 확인 안함)
+- `!` : not 연산자
+
+- `삼항연산자` : true ? 1 : 2 => `:` 기준으로 true면 왼쪽 false면 오른쪽을 리턴
+
+  ```js
+  const result = Math.PI > 4 ? 'yes!':'no!' // no! 가 리턴됨 
+  ```
+
+- if
+
+  ```js
+  if (userName === '1q2w3e4r') {
+  	message = '<h1>This is admin page</h1>'
+  } else if (userName === 'ssafy') {
+  	message = '<h1>You are from ssafy</h1>'
+  } else {
+  	message = `<h1>hello ${userName}</h1>`
+  }
+  
+  
+  // switch
+  switch(userName) {
+      case '1q2w3e4r' : {
+  		message = '<h1>this is admin</h1>'
+      }
+      case 'ssafy' : {
+  		message = '<h1>you r from ssafy</h1>'
+      }
+      default: {
+  		message = `<h1>hello ${userName}</h1>`
+      }
+  }
+  //"<h1>hello 1q2w3e4r</h1>"
+  // switch는 특정 조건을 만족하면 멈춰야하는데 그렇지 않음... break문을 주어야 한다.
+  switch(userName) {
+      case '1q2w3e4r' : {
+  		message = '<h1>this is admin</h1>'
+  		break
+      }
+      case 'ssafy' : {
+  		message = '<h1>you r from ssafy</h1>'
+  		break
+      }
+      default: {
+  		message = `<h1>hello ${userName}</h1>`
+  		break
+      }
+  }
+  
+  // "<h1>this is admin</h1>"
+  
+  
+  ```
+
+
+
+
+## 함수
+
+- 함수도 값이다..typeof(func) => function
+
+### 1. 선언식(statement, declaration)
+
+- 코드가 실행되기 전에 로드된다.
+
+```js
+// 미리 로드시켜 놓음
+function add(num1, num2) {
+    return num1 + num2
+}
+
+add(2, 7)
+console.log(add(2,7)) // 9
+```
+
+### 2. 표현식(expression)
+
+- 함수 표현식은 인터프리터가 해당 코드에 도달 했을 때 로드된다.
+
+```js
+// 이름없는 함수를 변수에 할당
+// 만난 순간에 로드시킴
+const sub = function (num1, num2) {
+    return num1 - num2
+}
+console.log(sub(7, 2))
+```
+
+
+
+### 화살표 함수(Arrow Function)
+
+- 항상 이름이 없음(익명 함수)
+- 화살표 함수의 경우 일반 function 키워드로 정의한 함수와 100% 동일한 것이 아니다.
+- 변수에 할당할 수 있지만, 이름 붙은 함수(생성자)로는 만들 수 없다. (할당가능, 이름 못가짐)
+
+## DataStructure
+
+### 1. 배열
+
+```js
+const numbers = [1, 2, 3, 4,]
+
+console.log(numbers[0])
+console.log(numbers[-1]) // undefined : 정확한 양의 정수 index 만 가능!
+console.log(numbers.length) // 4
+
+// 원본 파괴
+console.log(numbers.reverse())
+console.log(numbers)
+console.log(numbers.reverse()) // 원상복귀 됨.
+console.log(numbers)
+
+// push -> 값 추가, 배열의 길이를 return 함
+console.log(numbers.push('a')) // 5 -> 리턴값이 배열의 길이임
+console.log(numbers)
+
+// pop -> 배열의 가장 마지막 요소 제거 후 return
+console.log(numbers.pop())
+console.log(numbers)
+
+// unshift -> 배열의 가장 앞에 요소를 추가하고 배열의 길이를 return
+console.log(numbers.unshift('a'))
+console.log(numbers)
+
+// shift -> 배열의 가장 앞 요소를 제거 후 return
+console.log(numbers.shift())
+console.log(numbers)
+
+// includes -> 해당 요소가 배열에 포함되어 있으면 true/ 없으면 false를 return
+console.log(numbers.includes(1))
+console.log(numbers.includes(0))
+
+console.log(numbers.push('a', 'a'))
+console.log(numbers)
+console.log(numbers, indexOf('a')) // 4 => 중복이 존재한다면 처음 찾은 요소의 index를 return
+console.log(numbers, indexOf('b')) // -1 => 찾고자 하는 요소가 없으면 -1을 return
+
+// join - 배열의 요소를 join 함수의 인자를 기준으로 이어서 문자열로 return / 원본은 변화 없음
+console.log(numbers.join()) // '1,2,3,4,a,a' -> ()에 아무것도 넣지 않으면 `,`를 기준으로 가져온다.
+console.log(numbers.join('')) // '1234aa'
+console.log(numbers.join('-')) // '1-2-3-4-a-a'
+
+console.log(numbers) // 원본은 변화하지 않음
+```
+
+
+
+### 2. 객체
+
+```js
+// 객체
+const me = {
+    name: 'ssafy',
+    'phone number': '01012345678', // key 가 여러단어 일 때
+    appleProducts : {
+        ipad: '2018pro',
+        iphone:'7',
+        macbook:'2019pro',
+    }
+}
+
+console.log(me.name) // ssafy
+console.log(me['name']) // ssafy
+console.log(me['phone number']) // 키가 여러단어 인 경우 무조건 [] 로 접근!!
+console.log(me.phone_number)
+
+console.log(me.appleProducts)
+console.log(me.appleProducts.ipad)
+
+// Object Literal (객체 표현법)
+var books = ['Learning JS', 'Eloquent JS'] // 배열
+
+var comics = {
+    'DC': ['Joker', 'Aquaman'],
+    'Marvel': ['Captin Marvel', 'Avengers']
+} // 객체
+
+var megazines = null
+
+var bookShop = {
+    books: books,
+    comics: comics,
+    megazines: megazines,
+}
+
+console.log(bookShop)
+console.log(typeof bookShop)
+console.log(bookShop.books[0])
+
+// ES6+
+// object 의 key와 value가 같다면, 마치 배열처럼 한번만 작성 가능
+var bookShopTwo = {
+    books,
+    comics,
+    megazines,
+}
+console.log(bookShopTwo)
+```
+
+
+
+### 3. JSON(JS Object Notation, JS 객체 표기법)
+
+- KEY-VALUE 형태의 자료구조를 JS 객체와 유사한 모습으로 표현하는 표기법
+- 모습만 비슷할 뿐이고 실제로 Object 처럼 사용하려면 다른 언어들 처럼  JS 에서도 Parsing(구문 분석) 작업이 필요하다.
+
+```JS
+// JSON -> trailing comma 사용못함..(객체에서만 가능)
+const jsonData = JSON.stringify ({ // JSON -> String으로 바꿈..
+    coffee: 'Americano',
+    iceCream: 'Mint Choco',
+})
+console.log(jsonData) // {"coffee":"Americano","iceCream":"Mint Choco"}
+console.log(typeof jsonData) // string
+
+const parseData = JSON.parse(jsonData)
+console.log(parseData) // { coffee: 'Americano', iceCream: 'Mint Choco' }
+console.log(typeof parseData) // object
+
+```
+
+#### 정리
+
+- Object : JS의 key-value 페어의 자료구조
+- JSON : 데이터를 표현하기 위한 **단순한 문자열**
+
+
+
+### 4. Array Helper Method
+
+- Helper란 자주 사용하는 로직을 재활용할 수 있게 만든 일종의 Library 다.
