@@ -1,0 +1,48 @@
+{% extends 'articles/base.html' %}
+{% block content %}
+<h1>Articles</h1>
+<p><b>당신의 방문 횟수 : {{ visits_num }} {% if visits_num == 1 or visits_num == 0 %} time {% else %} times {% endif %} </b>
+</p>
+{% if user.is_authenticated %}
+<!-- 인증된 사용자 라면 new 보여줌 -->
+<a href="{% url 'articles:create' %}">[NEW]</a>
+<!--appname : url 이름-->
+{% else %}
+<a href="{% url 'accounts:login' %}">[새 글을 작성하려면 로그인하세요]</a>
+{% endif %}
+{% for article in articles %}
+{% include 'articles/_article.html' %}
+{% endfor %}
+<script>
+// 1. 각 게시글 별로 좋아요 버튼이 있으니 모두 선택해야 한다.
+const likebuttons = document.querySelectorAll('.like-button') // like-button 클래스 가져오기
+
+// 2. for Each 를 사용해서 각각의 좋아요 버튼을 클릭
+likebuttons.forEach(button => {
+    button.addEventListener('click', function (event) {
+        console.log(event)
+        // event.target.dataset.id 의 value는 data-id 값이 들어 있다.
+        const articleId = event.target.dataset.id // 값 가져오기..(event의 target의 dataset의 id))
+        // 해당 상세 게시글의 좋아요 요청을 보낸다.
+        // https://github.com/axios/axios#global-axios-defaults
+        //https://github.com/axios/axios#request-config
+
+        axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest',
+        axios.defaults.xsrfCookieName = 'csrftoken'
+        axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+        axios.post(`/articles/${articleId}/like/`)
+            .then(response => {
+                document.querySelector(`#like-count-${articleId}`).innerText = response.data.count
+                if (response.data.liked) {// t/f 판단
+                    // 좋아요 색깔을 빨갛게
+                    event.target.style.color = 'crimson'
+                } else {
+                    // 좋아요 색깔을 까맣게
+                    event.target.style.color = 'black'
+                }
+            }) // 응답이 성공하면 response
+            .catch(error => console.log(error))// 에러처리
+    }) // 버튼에 이벤트 생성
+})
+</script>
+{% endblock content %}
