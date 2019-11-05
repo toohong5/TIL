@@ -5,46 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        .completed {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+    </style>
 </head>
 <body>
     <div id="app">
-        <img v-bind:scr="vueImage" alt="todo-list">
-        <li v-for="todo in todos" v-if="!todo.completed" v-on:click="check(todo)"> <!-- list element 를 todo개수 만큼 반복 / false인 것만 나옴 / check(for의 인자)-->
-            {{ todo.content }}
-        </li>
+        <select v-model="status">
+            <option value="all" selected>all</option>
+            <option value="active">active</option>
+            <option value="completed">completed</option>
+        </select>
+        <div :style="{ color: activeColor, fontSize: fontSize + 'px' }"> <!--v-bind로 style을 줘야 적용됨.-->
+            Style test
+        </div>
+        <img :scr="vueImage" alt="todo-list">
+        <div v-for="todo in computedTodosByStatus" :class="{ completed: todo.completed }" :key="todo.id"> <!-- todosByStatus() 적용된 이후의 todo를 list element 를 todo개수 만큼 반복 / false인 것만 나옴 / check(for의 인자) / 누르면(true가 되면) style적용됨-->
+        <!--<div v-for="todo in todos" v-bind:class="todo.completed ? 'completed' : ''"> 삼항연산자로 표현-->   
+            <input type="checkbox" v-model="todo.completed">
+            <span>{{ todo.content }}</span>
+        </div>
         <!--<li v-else-if="value === 5">[완료!]</li> completed 가 true인 애들은 완료로 표시-->
-        <li v-else v-on:click="check(todo)">[완료!]</li> <!-- completed 가 true인 애들은 완료로 표시 한번 더 클릭하면 원상태로...-->
+        
+        <div>
+        <input type="text" v-model="newTodo" @keyup.enter="addTodo">
+        <button @click="addTodo">+</button> <!--클릭하면 addTodo함수 실행-->
+        </div>
+        <footer>
+            <button @click="clearCompleted">Clear</button>
+        </footer>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
+        const STORAGE_KEY = 'vue-todos'
+        const todoStorage = {
+            //string 을 json으로 바꿔줌..(fetch)
+            fetch: function() {
+                // parse : String -> JSON
+                return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]')
+            },
+            save: function(todos) {
+                // stringify: JSON -> String 으로 바꿔줌
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+            }
+        }
         const app = new Vue({
             el: '#app',
             data: {
+                status: 'all',
+                activeColor: 'red', // style에 적용됨.
+                fontSize: 30,
                 todos: [
                     {
+                        id: 1,
                         content: '점심 메뉴 고민',
                         completed: true,
                     },
                     {
+                        id: 2,
                         content: '사다리 타기',
                         completed: false,
                     },
                     {
+                        id: 3,
                         content: '낮잠 자기',
                         completed: false,
                     },
                     {
+                        id: 4,
                         content: '야자 하기',
                         completed: false,
                     }
                 ],
+                newTodo: '', // 새로입력될 todo가 저장됨.
                 vueImage: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMSEhUSEhIVFRUVFhUVFxUXFxUVFxUVFRUXFhUVFRUYHSggGBolHRUVITEhJSkrLi4uFx8zODMsNygtLisBCgoKDg0OFxAQGisdHR0tLS0tLS0tLS0rLSstLS0tKy0tLS0rLS0tLS0tLS0tLSsrLS0rLSsrLS0tLS04LjctK//AABEIAKUBMQMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAADBAIFAAYHAQj/xAA3EAABAwIDBQcDAwMFAQAAAAABAAIRAwQSITEFQVFhcQYTIoGRofCxwdEyQuEjcvEHFFJigiT/xAAYAQADAQEAAAAAAAAAAAAAAAAAAQIDBP/EACARAQEBAQADAQEAAwEAAAAAAAABAhEDITESQTJRcSL/2gAMAwEAAhEDEQA/ANGCIwIQR6QWbQemEdrUJjUdoSOJsCLCgwI7QgWoBqmGIjaaKGJiPKDUUhe02KZYpqoSc1Tp00Xu0wynCDDp00R9QAZEdJVdf7TwA4T7fda/cdoHkwQCOYy9Vczai64vL3aI0ORGhSbNoEZg9QqC6uC4SARyBkINO7kcPzz4K/yj9NrN9iE7x8KsbG6DjHRaO28gRMkFN0NpFpnRL8w5XR6NIJgU1olDbDwZxfJV2ztPxCVxTmo2AsQ3MVcztEzDJGaTue0AJ8KX5p9i4e1K1WpWltppOaJ/vWO0KVzR2AVQl3BNuIOiE5iRlXKJCO5iHhTLgLmKBYmg1emmgcJli8wplzUMhBF3BK1AnHpd4T6CjmoZamiEItSABaswqZC8VBHCsU4WICLQnbaklqYVnaKTjBThEDUcjJAcpOisCZpNQaLU9RpJlHrWL0hGFJS7lI0aLEV1PJEpU1O4ENKVMm0DeQPNVe3b2mxpBquHJrh+JWu9ptpw6BrxlaxVuSczqtc4/rPW/wCHdoX0u8L3Ef8AZAbdHhP18ki6TqVjsOUEgrRC1bcxmMuW5Qq1QfPgq5lXONxTTNOSX0MxkZ70wy6kD55IDmcFlDVPg62DZdIvBIH6Ri/8xJ9PuivoPbkR+4gT0kz5FC7OXZZWE6GWyNILXZH0+q3LZNn3lTEBP9TQ6CKeFxjhknMi6a9WsHhkgHMGRziR+Eo2kcOI78vPKPqul3uzQ2i540Bk9CBl6mPVaZtxoa0YW/8AEDlG/wBwnZ6TL7UoeRM5aKdGseKTFeSQenoYRDUgiNPn8qFrRm0HAABWez62JsnVUjCIJPQeeqbo37WjL4UrkdXbgh4BuVQ6/nenqD41d5KLni5oxhUixe0nAqTyoUUqNQXpiolKiqDgT0F6PCG5qEllEtR8KG9AAcoKT0NxQEpWIWJYgHmUU1SZCgwphpQEu9WDNQcxGo00lGLcKwpBLUKadpiEjMU2KbmqNFyI5K02MUbpngceRUqSjtB8U3dD9EodjjO162Oq48/oq9xRrgy5x5n6oBXVHMx3uvGtKlTMImKUBFjdyYpmFBrPkgIpZwLfIj7pwhZnqjWzATnr+N/sh0mka/OiZpPG75KZNm7KW01BIEE4SDn4gRhPUfhdG2Bs3BVc0Dwghw5ioDI8iuadl7r9Q3ywjrin3DfddV7M1SXOe7cxgPWJVT4m/T23LYdy5oMSfwua7ccxgc3IxDRygEDPfo4npHNbl2l2mO7PMkc40+sLkV9tDvHTM/u4CSOHSB6qbVSB93BiN2n0H380GrXjrw+yLSfnJEk+3Xn+VhtxzJPDd0UqI1toO/AS7bs7yh3waHHCZHHWUq0pULendnin7baRmFr1GvxVjSIPLomG5bLu54eqtXFafsuQeK2q3dIWestM1hbKG6inabVj6ahRA0UI0k89qA8IFJ1GJOqFY1Um8JpKOalqgTxCUrNQAFilhWILq0YjtKAwo4CVVBGulPUAlKNJWVvShIzFNsL1zlIiEtVelVGaVVHD0lRRQ9IHaRVfty1q1WOYwxI1T1uUyEp6VzrjVfs1cgkGkQB+7KIVZUoQcJOnFd3uqBc0iQJ3kTHkuS9rNkdy8nHik8IHut876w1jijkab1CUIhTYtOoELlJvVDBR2Ejf7pkKw5a+W7/Kyk7PLWVIUi4HC5jjqQDnHGEk1+aKGybCuQ2ow8HNPUGZHoPddg2bWw2uMES5zjOkiTHlGS4dskl1Rg4uaOknM+5XVtqXxp2NNoIBMAcv1Z+0rTPxGvrX+1O0/BhnM5TyZofPED/5Wkkhe3125ziSfffCWdUWVrSH6L89fVOCmC2Adenz/KpqFQzqrujUBH+B836oCr2jZgZgZcT/ACq2lUDTO/itgvHNwkHT0WuV4nLRFAtwC8YssuGUD7ry0uMJg5odNs7yp16ccDzHyUoGy7OqjIj0W1WFQEbvJc+2VXgxxW2Wl2GZlGp2HK2eixe1Ao7MvG1Wy057wiXAWLWEazkpUcjVNUu8JQVCogFEeVENTSWc1L1Wp6o1K1GpjhXuliOsQODNOacoiUjSVpasUVZu3pp0ZJekYUi6UjevqShsElewi0mqoBQ1QDc001ik2nmpA1sxMBqygxFhCkHjLVaL2ztg6SSVuV/cBo+Fc77X3hOU+Uq8T2jfxpVaJyXgUnBSa1bcYI4U3YU2Z49ARI5R89kJjVlF0OTkCxoPpwWii0vJ8FQOILTMtMDKOSSuLaDlvzTIc0DJok+WusotlSdUcG6mfnzmq51PxZdk9kvfUxYSQwSeZIMD6rbO2/hpNpzphaDpuLnEffqtr7H9nwy3bAhz4c7j4XAtEeX1WvdtbRxqtMb35DfwjiMwOvor+Z4n+uU35IeVlH9BOUyABvJ5BXe2tmF1UFoyd7TxQbvZbaNTDL/C0OcacYvE4tgGcv0kSsf61nzqvbbuaRja5siRIIn1VpaUzv8Ayvbh7mkCk+u6gRJFfC4ioA9wAwk4Za06HcSVZWjGlgcPMbwUdLil2k0jT7fhUlbVbDtN2ZaZ5Hr10VDWZE/CgIsU2NxEDXchUwpsY7dn0/CQEoxMHLnx4LZLUl1ODqM/ytZLwdchuP5V3Z1SGDiMpR0Ng7O3uB+EyVtlYSFzanUIcN0wui2Y8Az3LPyf7aYpCq1L1Gp+sxJ1clMqibgsBUKz0MVEAR6UqI7qiWeUwgsXkrEyN29PNWNEpGkUdj1Klg1yKCkm1Udj0uGMmKISocmqZRQaamKLEuxOUEjkHY1SeJXoKgXIMhfUBBmT0XP+1NuYyZAXSbl0DRaN2vuCWkEwOAEeqrH1G56c9cpM0UXrGlbsDltTBER4p1nWdxGn+fQIZmj0D4Uza0TXOhxZDFBh39x3H/tv38VUKoWdq55AC6T2L7Dl5FQhrh5zHLKOXmU92C7DyBVrDLKABBPU8F1eytmsENEBaf4/9R9LWGyu7bE7j9o+i1nb+xHFznBrSNxM5Hmd/kPWVvrGqFa3DhCy/S+Pnnbdg7E5pgEf3DPpGmvwrMFA02GrRJcBgL2OLHxxkCCZ3OBHmuhf6gbFDWd4BBBjImIPHOI06LRn0AWwR/Mcxv8A5SqpeA95RNPBRpuLfHnUdifL24C4QBJgkAxlJjVUHc934Q7LThHVbDbW2EEkZb9+Z57h+VSbRBxEgfOimC1SbTu3kkZEaaZ+SqKjpjiMvLd86LYO4k6a+aVvtmR4mwRrHLrvTJV0SmqbxoQhmlyT2zLFzzA9EBsGwOzfetJIxNcCM9c9R/P+EO87M16EhrS9m4tzI5OAW49mbU02QrmosdasraYljmNtseu8iKbgN5d4QPXVbrYWr6bQ0kGAn6pQy9TfJ1UxIFWaqu6CtqhyVVdlOFVTcFKmoj10tCpNFBQnFEhBqo4deYl6gSViaVhjUhVSTaiiauaR9WtOomW11VUaiaa5IdWNOorCg5VFs5WVFyDlWLHJig9VrKmadoZqauHsaAamaN3eSA5uaShIlap2psWuB3nktvoslVu2GtaNy38eO1j5NenHr20LTolG6wtp228EnMc/CPuMyqNjS4gMY3PQuY0k/wBrQ3TyPVaWMZUqNIlpABPTNbJ2M2QatRrdCT6BV1C0e0eIAnh3VP7LfewFvgmoRBOXT8LTx59o3r06Xa3NOhTAc6AABJPAKwsNrUniWuBHFcH/ANQe0L3XDqQcQ1gAgHUkSfqFWbE7R1KRgPOEjMEyOeqNSUZ7H0xSvmO0cD5psPC4b2f29UJBbnpln7LqmwLw1RJOm5Z2cXL0ftTZ97bvAGcfyPouMXLwJbwMxvad+eULvF6P6bt/hP0XANoNBrPgwcRImRhzjODl884VD1sQGGc5nLlw5ha3fAFxAGUngPvyKu61xgp5jPl/ImFrVasHbh7gjog+BXg7uMiQd+sZn1URddHCPML3/dZRrwnNADhuGseSOB7WpN1Az9lc7Cs3EywZqot2AmJ1XU+wVjABLBH/ACRBT2zLYlgxNg8QoV6UZLbq9uIVHetiYCnyZPx641q5yKXxpi8pnFJSVR65ee3R0V7slVXZTT6qQuStZUUjVCXcEzWCEWqoSIKBWRil6jlSAclijKxAetcoqbGL1rEAagU2wpAOTFOolQtLVWLTkqmg9Ptcpqodpqzs1V0NytLRyS4s8OSWczNHxIVRJT0xoqbbTG4cznwCuRoq6+IGsLfx1z+RpVxs/Ef0dBu6n8IT9lv/AHOLW8GZOd1I1HU8+mwvqiZygfVZSqNcdJ+i6uRz9ahd2ncwTDQSIxTUcecHIdcvNb12YuB3eWTt4gDdwCVvbBrmkuA4jruPWUCwFSi2CJHLQcuSWb+Ts61b/UC1/wDoL5jGAfMCCD6LWKdQhb7t2my4HiOY8oWqVNhPxYWeLzz3rLX3sXINbXl1RLMLHjEA5hwmHA7wdCF33/TQ1jbmtcABzyAGjg0HyzJ3LmnZHsbUe9huavgbpTBM+m4Luez2ta1rWgAAQANICnquLCs7wHouP9obVgqOL2lueoYMPXG2N/8A1cV1m6f4D8yXLL2o6o97mtkOM42gloGrS9gzII/e2T9ECNR2nOEmm4PYP3NzAnQOB8TTyI3ZLWK9wQcz5/Yrar/Z7W1Ja/AXiCBGF4O4SMOLeP2uiIHiCo6uxatRxwmCDDmkYhMxiYXScJ4buhyQVFSpJkZdNEW2YXEQtx2V2Dc8S8QeW/mFtux+xLGRv6iQeoKX6VMte7Ndk8cOcw8d66tsTZrabA0AiPVebJ2WaQAaG4eGeX9p+yumM4iE4ml6lDJVd9bZK7eVU7QeBlK0Q0vbDIJC12oYMLYO0FYCRK1iFy+TPtvi+npKBWCOEKolFlXNWd3kpOK8c8K4m0rXEKvqFPXLlW1XJpeQvUPEvEBYQsCC6oovqJUDPC9pjNL96jUHoCwopui9IsejMqKauLu3erK2fmtfpXCsba4SVKvg9De9LtqqLaiVqocxwM1R7WuOUhXJGSodqNJBh0KsavUbzLFBcbRYP2jzJTFrtFzowjLkIH8qurljHf1C30BVvYXLDAYD1iF2yuSxa0aZObj83IuQygEHUa+vzcosnRSe35880tCE77Z9N4zbM+onj7qqPZjxSx5GZI4/JV4HGSZ9E5ReZDoHABZVpHmyLW4Y4eLFBk/2mMp8yt2s9shjf6kAgTkZy+ArVql06HAGPCQIyzwO+8KrokiBnIkeRH5c5R7W3Pa/aLvKZYyYIzO8iPEBwIE/RIW0uZlk4GCf+QMmTxJznjmd6r7SnB6mfpP3V1b0Y9kyTbsOlUEPaCDmQRvOvTcnKGwWMiGg7s9dIz4pqy0T2YQRe1sQ3T0T7KI4IbEw1AqTGwpyoheEqkoVlTbQt5VrWeFTX121syVeU1rO1LI7wB7rXK2FpIEErbL7aLDkZ5SFRVg0mQAPJR5M+l+PVVuDJI3BVrWKprx2qwjekq9ZBNdDqvQg5WzFe9K1QiuegPdmkr0h3axe41iC7BUFz17VfCWdUTIUvRqT0kHIzHoCzZVTdJyrKIlPNyCVVKdCsLRyqKdVWNB2SSouRUUqDs0gypITdAwoUsHOyWtbbqugxqrqtXgKtu6jIJcU56KufVLqqHZSfKVseyHVyAXZf3GIVJte6GOKZw8z+UrTqyYc8u4hpOfJdWa5dN9G02M8Ididyk+/BTZdl514nL0WtWds5w3U2+rir61IYAG+vzVWlZ0mgZu9PwnaD5OI+QVOxxLuKtKTYHP6KbFGN3X591ChQ94XtM4tNNAn6dKGyosVKPb05A8yrinSyVZs4+LlGXkryiJGXVSYlu2E8laZR8aIYjJTDUBjkQPQVEMqD3r3vECvUVJJ3l8BqVrG2NsUxvE+4VrtN2sjzWobTrMORA81XwudI3m1QXfqaR5z6FLi6JOqpdo1QCcLc+IKWsr/ADzU6/8AUVn1WyVquSpr+rEo5uZ3qp2hVkwsuNelX1c1HvVAsUXBUljqkpd9VFcxL1BmkGd8sUcKxAHuHZoRK8WICQRqSxYgosLNWRbkvFimrhZhzVva6L1Yko5RT1PRYsSUDXElKXlqMMlYsRCrn+1h/Uhe0DgALYk74WLF1Z+OarKleEPDI13nP2Wx2LJzJ5en+VixaIqwt/1Jxz5gcVixKiLC1bMDSE4/h80WLFnVwe3MT/b+U9aXBn1WLFCz7HZptjl6sRAkH5orXLFiCThDqCVixOEqNqUBhK5l2gpjEYyPFYsVX4U+tcuW796r2OzMcVixZxdOMqFCqrFiYDCmGrFiVEDrBJOXixI2QsWLEB//2Q=='
            },
             methods: {
                 check: function(todo) {
                     todo.completed = !todo.completed
+                },
+                addTodo: function() {
+                    if (this.newTodo.length !== 0) { // 0이 아닐때 실행
+                        this.todos.push({
+                            id: Date.now(), // 작성시간을 id로 준다..(어떤 값이든 상관은 없음)
+                            content: this.newTodo,
+                            completed: false,
+                        })
+                        this.newTodo = ''
+                    }
+                },
+                clearCompleted: function() {
+                    const notCompletedTodos = this.todos.filter(todo => {
+                        return !todo.completed // true인 애들만 리턴
+                    }) // 완료된 애들은 안나오게...
+                    this.todos = notCompletedTodos
                 }
-            }
+            },
+            computed: {                
+                computedTodosByStatus: function() {
+                    // 진행중인 일(완료되지 않은 일)
+                    if (this.status === 'active') {
+                        return this.todos.filter( todo => {
+                            return !todo.completed // false인 애들만 보여지게 함.
+                        })
+                    }
+                    // 완료된 일
+                    if (this.status === 'completed') {
+                        return this.todos.filter( todo => {
+                            return todo.completed // true인 애들만 보여지게 함.
+                        })
+                    }
+                    // all (active, completed가 아닌, 완료 혹은 미완료가 모두 포함된 배열)
+                    return this.todos
+                }, // status에 따라 filter 적용...
+            },
+            watch: {
+                todos: {
+                    // handler 특정 데이터가 변경 되었을 때 실행할 함수
+                    handler: function(todos) {
+                        todoStorage.save(todos)
+                    },
+                    // 객체의 nested item 들도 관찰할지 유무를 설정. true 인 경우 내부 요소들도 감시하도록 함.
+                    deep: true,
+                }
+            },
+            // 새로고침 될 때(DOM과 Vue instnace가 연결되는 시점) 실행 되는 것
+            mounted: function() {
+                this.todos = todoStorage.fetch()
+            },
         })
     </script>
 </body>

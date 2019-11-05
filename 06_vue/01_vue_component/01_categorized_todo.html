@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .todo-list {
+            display: inline-block;
+            width: 33%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="todo-list">
+            <h2>취업준비</h2>
+            <input type="text" v-model="newTodo1" @keyup.enter="addTodo">
+            <button @click="addTodo1">+</button>
+            <li v-for="todo in todos1" v-bind:key="todo.id">
+                <span>{{ todo.content }}</span>
+                <button @click="removeTodo1(todo.id)">x</button>
+                <!--todo.id 에 해당하는 것만 삭제-->
+            </li>
+        </div>
+        <div class="todo-list">
+            <h2>SSAFY</h2>
+            <input type="text" v-model="newTodo2" @keyup.enter="addTodo">
+            <button @click="addTodo2">+</button>
+            <li v-for="todo in todos2" v-bind:key="todo.id">
+                <span>{{ todo.content }}</span>
+                <button @click="removeTodo2(todo.id)">x</button>
+                <!--todo.id 에 해당하는 것만 삭제-->
+            </li>
+        </div>
+        <div class="todo-list">
+            <h2>기타</h2>
+            <input type="text" v-model="newTodo3" @keyup.enter="addTodo">
+            <button @click="addTodo3">+</button>
+            <li v-for="todo in todos3" v-bind:key="todo.id">
+                <span>{{ todo.content }}</span>
+                <button @click="removeTodo3(todo.id)">x</button>
+                <!--todo.id 에 해당하는 것만 삭제-->
+            </li>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        const app = new Vue({
+            el: '#app',
+            data: {
+                todos1: [],
+                newTodo1: '',
+                todos2: [],
+                newTodo2: '',
+                todos3: [],
+                newTodo3: '',
+            },
+            methods: {
+                addTodo1: function () {
+                    if (this.newTodo1.length !== 0) {
+                        this.todos1.push({
+                            id: Date.now(),
+                            content: this.newTodo1,
+                            completed: false,
+                        })
+                        this.newTodo1 = '' // 함수 실행된 후 빈문자열로 두어야 입력 후 글 안남음.
+                    }
+                },
+                removeTodo1: function (todoId) {
+                    // false 인 애들만 뽑아오기
+                    this.todos1 = this.todos1.filter(todo => {
+                        // 완료한 todo
+                        // 완료된 todo를 제외한 나머지 todo만 filter를 통해서
+                        // 새로운 배열로 return
+                        return todo.id !== todoId // 누른애랑 다른애들만 출력...
+                    })
+                }, // 특정 id 삭제
+                addTodo2: function () {
+                    if (this.newTodo2.length !== 0) {
+                        this.todos2.push({
+                            id: Date.now(),
+                            content: this.newTodo2,
+                            completed: false,
+                        })
+                        this.newTodo2 = '' // 함수 실행된 후 빈문자열로 두어야 입력 후 글 안남음.
+                    }
+                },
+                removeTodo2: function (todoId) {
+                    // false 인 애들만 뽑아오기
+                    this.todos2 = this.todos2.filter(todo => {
+                        // 완료한 todo
+                        // 완료된 todo를 제외한 나머지 todo만 filter를 통해서
+                        // 새로운 배열로 return
+                        return todo.id !== todoId // 누른애랑 다른애들만 출력...
+                    })
+                }, // 특정 id 삭제
+                addTodo3: function () {
+                    if (this.newTodo3.length !== 0) {
+                        this.todos3.push({
+                            id: Date.now(),
+                            content: this.newTodo3,
+                            completed: false,
+                        })
+                        this.newTodo3 = '' // 함수 실행된 후 빈문자열로 두어야 입력 후 글 안남음.
+                    }
+                },
+                removeTodo3: function (todoId) {
+                    // false 인 애들만 뽑아오기
+                    this.todos3 = this.todos3.filter(todo => {
+                        // 완료한 todo
+                        // 완료된 todo를 제외한 나머지 todo만 filter를 통해서
+                        // 새로운 배열로 return
+                        return todo.id !== todoId // 누른애랑 다른애들만 출력...
+                    })
+                } // 특정 id 삭제
+            }
+        })
+    </script>
+</body>
+
+</html>
