@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <my-todo-list category="하고 싶은 일"></my-todo-list>
+        <my-todo-list category="해야하는 일"></my-todo-list>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        Vue.component('my-todo-list', {
+            template: `
+            <div class="my-todo-list">
+            <h3 :style="{color: titleColor}">{{ category }}</h3>
+            <input type="text" v-model="newTodo">
+            <button v-on:click="addTodo">+</button>
+            <li v-for="todo in todos">
+                {{ todo.content }}: {{ todo.todayDate }}
+                <button v-on:click="removeTodo(todo.id)">delete</button>
+            </li>
+            </div>
+            `,
+            props: {
+                category: {
+                    type: String,
+                    required: true,
+                }
+            },
+            data: function () {
+                return {
+                    todos: [],
+                    newTodo: '',
+                    todayDate: Date(),
+                    titleColor: 'red',
+                }
+            },
+            methods: {
+                addTodo: function () {
+                    if (this.newTodo.length !== 0) {
+                        this.todos.push({
+                            id: Date.now(),
+                            content: this.newTodo,
+                            completed: false,
+                            todayDate: Date(),
+                        })
+                    }
+                    this.newTodo = ''
+                },
+
+                removeTodo: function (todoId) {
+                    this.todos = this.todos.filter(todo => {
+                        return todo.id !== todoId
+                    })
+                }
+
+            },
+        })
+
+        const app = new Vue({
+            el: '#app',
+        })
+    </script>
+</body>
+
+</html>
