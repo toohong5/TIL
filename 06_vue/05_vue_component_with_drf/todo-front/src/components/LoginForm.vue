@@ -15,7 +15,7 @@
       <div class="form-group">
         <label for="id">ID</label>
         <input 
-          type="text" 
+          type="text"
           class="form-control" 
           id="id" 
           placeholder="아이디를 입력하세요"
@@ -40,6 +40,8 @@
 <script>
 // npm i axios
   import axios from 'axios'
+  // redirect 개념임
+  import router from '../router'
 
   export default {
     name: 'LoginForm',
@@ -56,13 +58,19 @@
     methods: {
       login() {
         if (this.checkForm()) {
-          this.loading = true
-          axios.get('http://127.0.0.1:8000', this.credentials) // 여기로 데이터(credentials) 보냄
+          // django jwt 를 생성하는 주소로 요청을 보냄
+          // 이때 post 요청으로 보내야하며 사용자가 입력한 로그인 정보를 같이 넘겨야 함.
+          axios.post('http://127.0.0.1:8000/api-token-auth/', this.credentials) // 여기로 데이터(credentials) 보냄
           .then(res => {
-            console.log(res)
+            this.$session.start()
+            this.$session.set('jwt', res.data.token) // (key, value)
+            // 성공시 메인페이지로 이동 (index.js의 path로 이동)
+            router.push('/')
           })
           // .then 에서 error 발생시 동작함
           .catch(err => {
+            // 로그인 실패시 loading 의 상태를 다시 false 로 변경
+            this.loading = false
             console.log(err)
           })
         } else {

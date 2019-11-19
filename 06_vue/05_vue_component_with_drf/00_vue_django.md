@@ -131,3 +131,4 @@ https://developer.mozilla.org/ko/docs/Web/HTTP/Access_control_CORS
 1. 서버(django)와 클라이언트(vue) 가 같은 도메인과 포트를 사용하도록 한다.
 2. 서버에서 cross-origin HTTP 요청을 허가한다. (우리가 해결할 방법)
    -  실제 API 서버들은 이러한 CORS 제한과 관련된 처리를 모두 해두어야한다.
+
